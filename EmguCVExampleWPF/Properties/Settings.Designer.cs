@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace EmguCVExampleWPF.Properties {
+namespace Quadrep.Properties {
     
     
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]

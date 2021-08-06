@@ -6,7 +6,7 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProjectGuid>{A4F3C960-6A7A-49D7-A708-7784A7750390}</ProjectGuid>
     <OutputType>WinExe</OutputType>
-    <RootNamespace>EmguCVExampleWPF</RootNamespace>
+    <RootNamespace>Quadrep</RootNamespace>
     <AssemblyName>EmguCVExampleWPF</AssemblyName>
     <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
@@ -114,7 +114,26 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="DataTableControl.xaml.cs">
+      <DependentUpon>DataTableControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="ImageProcessingControl.xaml.cs">
+      <DependentUpon>ImageProcessingControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Presenter\ImageConverter.cs" />
+    <Compile Include="Presenter\YOLO.cs" />
+    <Compile Include="SubWindow.xaml.cs">
+      <DependentUpon>SubWindow.xaml</DependentUpon>
+    </Compile>
     <Compile Include="ViewModel.cs" />
+    <Page Include="DataTableControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="ImageProcessingControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -127,6 +146,10 @@
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Page Include="SubWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs">
