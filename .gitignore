@@ -1,2 +1,6 @@
 packages/
 EmguCVExampleWPF/obj/
+*.jpg
+*.weights
+*.cfg
+*.names

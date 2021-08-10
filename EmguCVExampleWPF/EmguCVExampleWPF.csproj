@@ -120,6 +120,8 @@
     <Compile Include="ImageProcessingControl.xaml.cs">
       <DependentUpon>ImageProcessingControl.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Presenter\BBox.cs" />
+    <Compile Include="Presenter\EmguCVExtension.cs" />
     <Compile Include="Presenter\ImageConverter.cs" />
     <Compile Include="Presenter\YOLO.cs" />
     <Compile Include="SubWindow.xaml.cs">

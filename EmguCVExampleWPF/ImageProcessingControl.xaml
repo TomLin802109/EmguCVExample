@@ -76,10 +76,15 @@
                 </WrapPanel>
                 <WrapPanel HorizontalAlignment="Center" Margin="10,5">
                     <Button Content="Capture" Click="Btn_Capture"/>
+                    
+                    <Button Content="Show Table" Click="Btn_ShowTable"/>
+                </WrapPanel>
+                <WrapPanel HorizontalAlignment="Center" Margin="10,5">
                     <Button Content="Show Mat" Click="Btn_ShowMat"/>
                 </WrapPanel>
                 <WrapPanel HorizontalAlignment="Center" Margin="10,5">
-                    <Button Content="Show Table" Click="Btn_ShowTable"/>
+                    <Button Content="Start Detect" Click="Btn_StartDetect"/>
+                    <Button Content="Stop Detect" Click="Btn_StopDetect"/>
                 </WrapPanel>
             </StackPanel>
         </ScrollViewer>
