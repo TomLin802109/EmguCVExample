@@ -14,7 +14,7 @@ using System.Threading.Tasks;
 
 namespace Quadrep.Presenter
 {
-    public class YOLOv3
+    public class YOLO
     {
         private Net darknet = null;
         private string[] ClassName;
@@ -24,7 +24,7 @@ namespace Quadrep.Presenter
             {5,Color.Yellow},{6,Color.RosyBrown}
         };
         
-        public YOLOv3(string cfgFile, string weightFile, string nameFile)
+        public YOLO(string cfgFile, string weightFile, string nameFile)
         {
             //string[] ObjectNames = File.ReadAllLines(nameFile);
             darknet = DnnInvoke.ReadNetFromDarknet(cfgFile, weightFile);
