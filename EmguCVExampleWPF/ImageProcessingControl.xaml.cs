@@ -23,6 +23,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using Emgu.CV.Cuda;
 
 namespace Quadrep.CV
 {
@@ -34,13 +35,14 @@ namespace Quadrep.CV
         private ViewModel _vmModel = new ViewModel();
         private Dictionary<string, string> _deviceMap = new Dictionary<string, string>();
         private ICamera _cam;
-        private YOLOv3 Detector = null;
+        private YOLO Detector = null;
         public ImageProcessingControl()
         {
             InitializeComponent();
             this.Dispatcher.ShutdownStarted += Dispatcher_ShutdownStarted;
             this.DataContext = _vmModel;
             SearchWebCam();
+            if (CudaInvoke.HasCuda) MessageBox.Show("Cude Active", "Info");
 
             //var path = "CalibBoard1.jpg";
             //var image = CvInvoke.Imread(path, Emgu.CV.CvEnum.ImreadModes.Color);
@@ -86,6 +88,7 @@ namespace Quadrep.CV
         {
             Btn_StopDetect(this, null);
             Disconnect();
+            Thread.Sleep(200);
         }
         private void Btn_SearchWebcam(object sender, RoutedEventArgs e) => SearchWebCam();
 
@@ -111,6 +114,7 @@ namespace Quadrep.CV
         {
             if (_cam != null && _cam.IsConnected)
             {
+                _cam.BitmapEvent -= _cam_BitmapEventYOLO;
                 _cam.BitmapEvent -= _cam_BitmapEvent;
                 _cam.Disconnect();
             }
@@ -125,10 +129,15 @@ namespace Quadrep.CV
         }
 
         private void Btn_Connect(object sender, RoutedEventArgs e) => Connect();
-
+        private DateTime last = new DateTime();
         private void _cam_BitmapEvent(System.Drawing.Bitmap bitmap)
         {
-            this.Dispatcher.Invoke(() => _vmModel.ImgUp = bitmap.ToImageSource());
+            this.Dispatcher?.Invoke(() =>
+            {
+                _vmModel.ImgUp = bitmap.ToImageSource();
+                TbMsg.Text = $"FPS: {1 / (DateTime.Now - last).TotalSeconds:F1}";
+                last = DateTime.Now;
+            });
         }
 
         private void Btn_Disconnect(object sender, RoutedEventArgs e) => Disconnect();
@@ -139,10 +148,10 @@ namespace Quadrep.CV
             var img = _vmModel.ImgUp.ToBitmap().ToImage<Bgr, byte>().Mat;
             CvInvoke.Imshow("img", img);
         }
-        
+
         private async void Btn_ShowMat(object sender, RoutedEventArgs e)
         {
-            if (Detector == null) Detector = new YOLOv3("yolov3.cfg", "yolov3.weights", "coco.names");
+            if (Detector == null) Detector = new YOLO("yolov3.cfg", "yolov3.weights", "coco.names");
             var img = _vmModel.ImgUp.ToBitmap().ToImage<Bgr, byte>().Mat;
             //var img = new Image<Bgr, byte>("dog.jpg").Mat;
             var st = DateTime.Now;
@@ -167,14 +176,14 @@ namespace Quadrep.CV
             //});
         }
 
-        
+
 
         private void Btn_ShowTable(object sender, RoutedEventArgs e)
         {
             var ls = new List<BBox>();
-            for(int i = 0; i < 50; i++)
+            for (int i = 0; i < 50; i++)
             {
-                ls.Add(new BBox(i, 123.546f, i * 2,i*3,150-i,30+i ));
+                ls.Add(new BBox(i, 123.546f, i * 2, i * 3, 150 - i, 30 + i));
             }
             var window = new SubWindow(new DataTableControl(ls), "Data Viewer");
             window.Show();
@@ -182,7 +191,7 @@ namespace Quadrep.CV
 
         private void Btn_StartDetect(object sender, RoutedEventArgs e)
         {
-            if(Detector==null) Detector = new YOLOv3("yolov4.cfg", "yolov4.weights", "coco.names");
+            if (Detector == null) Detector = new YOLO("yolov4.cfg", "yolov4.weights", "coco.names");
             _cam.BitmapEvent -= _cam_BitmapEvent;
             _cam.BitmapEvent += _cam_BitmapEventYOLO;
             //var img = _vmModel.ImgUp.ToBitmap().ToImage<Bgr, byte>().Mat;
@@ -206,28 +215,29 @@ namespace Quadrep.CV
             var boxes = Detector.Detected(img, false);
             foreach (var i in boxes) img.Draw(i, System.Drawing.Color.Red);
             var ct = (DateTime.Now - st).TotalSeconds;
-            CvInvoke.PutText(img, $"FPS:{1 / ct:F1}", new System.Drawing.Point(0, img.Height), FontFace.HersheyComplex, 
-                                         1, new Bgr(System.Drawing.Color.Red).MCvScalar, 3);
-            this.Dispatcher.Invoke(() => _vmModel.ImgDown = img.ToBitmap().ToImageSource());
+            this.Dispatcher?.Invoke(() =>
+            {
+                _vmModel.ImgDown = img.ToBitmap().ToImageSource();
+                TbMsg.Text = $"FPS:{1 / ct:F1}";
+            });
             IsProcessing = false;
         }
 
         private void Btn_StopDetect(object sender, RoutedEventArgs e)
         {
+
             this.Dispatcher.Invoke(() =>
             {
                 if (_cam != null)
                 {
-                    
                     _cam.BitmapEvent += _cam_BitmapEvent;
                     _cam.BitmapEvent -= _cam_BitmapEventYOLO;
-                    
                 }
-                
+
                 //IsProcessing = false;
             });
-            
-            
+
+
         }
     }
 }
